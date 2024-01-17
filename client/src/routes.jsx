@@ -8,7 +8,8 @@ import Nopage from './pages/pagenotfound/Nopage';
 const routes = createBrowserRouter([
     {
         path: '',
-        element: <Application />
+        element: <Application />,
+        // loader = 
     },
     {
         path: "/login",

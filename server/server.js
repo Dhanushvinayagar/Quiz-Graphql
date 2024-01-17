@@ -1,53 +1,34 @@
 const express = require("express");
+const morgan = require('morgan')
+const cors = require('cors')
 
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' });
 
-const { showdb, showuser, createuser } = require('./dbutils/constants')
-
 const app = express();
 const port = process.env.PORT || 8080;
+app.use(morgan('tiny'))
+app.use(cors())
 
 const bodyparser = require("body-parser");
-const { dbIsConnected, sqlQuery } = require("./dbutils/query");
+const { dbIsConnected } = require("./dbutils/query");
+const router = require("./controller/routes");
 app.use(bodyparser.urlencoded({ extended: false }))
 app.use(bodyparser.json())
 
 app.use(express.json());
 
-dbIsConnected(showdb)
-
-app.get('/', (req, res) => {
-    res.send("Welcome to graphql server page");
-});
-
-app.get('/users', async (req, res) => {
+const dbConnection = async () => {
     try {
-        const response = await sqlQuery(showuser)
-        res.status(200).send({"response":response})
+        await dbIsConnected()
     } catch (err) {
-        console.error("Found error : ", err);
-        res.status(500).json({ error: err.message });
+        console.error("Error occured during db connection :", err);
     }
-});
+}
 
-app.post('/signup', async (req, res) => {
-    try {
-        const username = req.body.username
-        const password = req.body.password
-        const token = req.body.token
-        if(username && password && token){
-            const query = createuser(username,password,token)
-            const response = sqlQuery(query)
-            res.status(200).json({ "data": "successfully updated"})
-        }else{
-            throw new Error("check the data")
-        }
-    } catch (err) {
-        console.log("error", err);
-        res.status(500).json({"error": err.message})
-    }
-})
+dbConnection()
+
+app.use('/', router)
 
 app.listen(port, () => {
     console.log("server page (graphql) started on port ", port);

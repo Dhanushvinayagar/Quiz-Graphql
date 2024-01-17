@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useLayoutEffect, useState } from 'react';
 import {
     Box,
     Heading,
@@ -11,17 +11,35 @@ import {
 } from '@chakra-ui/react';
 import './login.css'
 import { Link } from 'react-router-dom';
-
+import { loginApi } from '../../services/api.services';
+import isLoggedIn from '../../utils/loggedin';
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-
+    const navigate = useNavigate()
 
     const [formData, setFormData] = useState({
         username: '',
         password: '',
     });
+    const [errorMsg , seterrMsg] = useState('')
 
-    const [errorMsg , seterrMsg] = useState(false)
+    
+    useLayoutEffect(()=>{
+        const checkAlreadyLogin = async() =>{
+            try{
+                const response = await isLoggedIn()
+                if (response) {
+                    navigate('/')
+                }
+            }catch(error){
+                console.error("Error occured ",error);
+                seterrMsg(error.message)
+            }
+        }
+        checkAlreadyLogin()
+    },[])
+
 
     const handleChange = (e) => {
         setFormData({
@@ -31,10 +49,27 @@ const Login = () => {
     };
 
     const handleSubmit = (e) => {
+        const loginFunc = async() =>{
+            try {
+                console.log('Login submitted:', formData);
+                const response = await loginApi({
+                    params :{
+                        "username" : formData.username,
+                        "password" : formData.password
+                    }
+                })
+                console.log(response , response.quizusertoken);
+                if(response.quizusertoken){
+                    localStorage.setItem('quizuser',formData.username)
+                    localStorage.setItem('quizusertoken',response.quizusertoken)
+                    navigate('/')
+                }
+            } catch (error) {
+                seterrMsg(error.message)
+            }
+        }
+        loginFunc()
 
-        console.log('Login submitted:', formData);
-
-        seterrMsg(true)
     };
 
     return (
