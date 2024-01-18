@@ -1,0 +1,14 @@
+.container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.content{
+    border : 2px solid rgb(189, 189, 189);
+    height: 100px;
+    width: 300px;
+    color:brown
+    /* text-align: center; */
+    /* margin-top: 50%; */
+}

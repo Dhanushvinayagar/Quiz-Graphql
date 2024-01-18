@@ -16,6 +16,7 @@ const isLoggedIn = async () => {
             console.error("Error occured : ", error);
         }
     }
+    return false
 }
 
 export default isLoggedIn

@@ -51,7 +51,7 @@ const Login = () => {
     const handleSubmit = (e) => {
         const loginFunc = async() =>{
             try {
-                console.log('Login submitted:', formData);
+                // console.log('Login submitted:', formData);
                 const response = await loginApi({
                     params :{
                         "username" : formData.username,

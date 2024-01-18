@@ -4,12 +4,13 @@ import Login from './pages/Registeration/Login';
 import Signup from './pages/Registeration/Signup';
 import Dashboard from './pages/Dashboard/Dashboard';
 import Nopage from './pages/pagenotfound/Nopage';
+import isLoggedIn from "./utils/loggedin";
 
 const routes = createBrowserRouter([
     {
         path: '',
         element: <Application />,
-        // loader = 
+        loader : () => isLoggedIn()
     },
     {
         path: "/login",
@@ -22,7 +23,8 @@ const routes = createBrowserRouter([
     },
     {
         path: "/dashboard",
-        element: <Dashboard />
+        element: <Dashboard />,
+        loader : () => isLoggedIn()
     },
     {
         path: "*",

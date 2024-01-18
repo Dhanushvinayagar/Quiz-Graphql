@@ -68,7 +68,7 @@ const Signup = () => {
                 }
             } catch (error) {
                 console.error("Error occured ",error);
-                if(error.message === "ER_DUP_ENTRY: Duplicate entry 'donaldduck' for key 'username'") {
+                if(error.message.includes("Duplicate entry")) {
                     setNotification('User already exists')
                 }
             }
